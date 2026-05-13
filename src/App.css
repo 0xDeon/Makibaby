@@ -49,7 +49,7 @@ body { font-family: 'Poppins', system-ui, sans-serif; -webkit-font-smoothing: an
 
 .cover-name {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: clamp(5rem, 18vw, 12rem);
+  font-size: clamp(3.2rem, 12vw, 9rem);
   font-weight: 400; font-style: italic;
   color: #dde6f5;
   line-height: 0.88;
@@ -338,7 +338,7 @@ body { font-family: 'Poppins', system-ui, sans-serif; -webkit-font-smoothing: an
    RESPONSIVE
    ════════════════════════════════════════════════════════════════ */
 @media (max-width: 600px) {
-  .cover-name { font-size: clamp(4rem, 22vw, 6rem); }
+  .cover-name { font-size: clamp(2.8rem, 14vw, 5rem); }
   .cover-rule { margin: 20px auto; }
 
   .chapters { padding: 32px 28px; }

@@ -17,7 +17,7 @@ function Cover({ onBegin }: { onBegin: () => void }) {
     >
       <div className="cover-inner">
         <p className="cover-eyebrow">a letter for</p>
-        <h1 className="cover-name">Maki<span className="cover-dot">.</span></h1>
+        <h1 className="cover-name">Kelechi<span className="cover-dot">.</span></h1>
         <div className="cover-rule" />
         <p className="cover-sub">tap anywhere to begin</p>
       </div>
@@ -38,25 +38,80 @@ const CHAPTERS: Chapter[] = [
   {
     num: '01',
     layout: 'big',
-    headline: "I've been meaning to say something.",
+    headline: "There was a woman named Kelechi",
+    body: "who never entered a room quietly — not because she was loud, but because her kindness arrived before she did.",
   },
   {
     num: '02',
     layout: 'left',
-    headline: "Something I kept putting off.",
-    body: "Not because I didn't know how. But because I wasn't sure when the right moment was.",
+    headline: "She gave without keeping score.",
+    body: "Sometimes money to someone struggling, other times food, encouragement, a listening ear, or simply her time. To Kelechi, generosity was not about how much she had — it was about how much love she could leave behind.",
   },
   {
     num: '03',
     layout: 'right',
-    headline: "So I figured — why not make it a whole thing.",
-    body: "You only get one shot at a first impression. Might as well make it memorable.",
+    headline: "Children ran to greet her.",
+    body: "Elderly neighbors waited by their gates hoping she would stop to chat. Friends trusted her because she celebrated their happiness as if it were her own.",
   },
   {
     num: '04',
+    layout: 'left',
+    headline: "She never made people feel small for needing help.",
+    body: "Her kindness came gently, wrapped in laughter, warmth, and sincerity. She believed love should feel safe, not heavy.",
+  },
+  {
+    num: '05',
+    layout: 'big',
+    headline: '"Love grows when you give it away."',
+    body: "And somehow, wherever she went, hope seemed to grow too.",
+  },
+  {
+    num: '06',
     layout: 'center',
-    headline: "Before I get to the point though…",
-    body: "Let me tell you a few things I've noticed about you.",
+    headline: "Then, things began to change.",
+    body: "Her business, once full of promise, started to slow. Her love life, which she had nurtured with patience and sincerity, began to feel distant.",
+  },
+  {
+    num: '07',
+    layout: 'left',
+    headline: "For the first time, she felt it.",
+    body: "Giving and giving… but not receiving enough back to stay steady. Her laughter didn't disappear, but it became quieter.",
+  },
+  {
+    num: '08',
+    layout: 'right',
+    headline: "Some nights she sat alone, wondering.",
+    body: '"Did I give too much? Did I forget myself while loving everyone else?" But even in that heaviness, something inside her refused to break completely.',
+  },
+  {
+    num: '09',
+    layout: 'big',
+    headline: "Maybe life wasn't punishing her.",
+    body: "Maybe it was teaching her that even cheerful givers need space to receive, to rest, and to rebuild.",
+  },
+  {
+    num: '10',
+    layout: 'center',
+    headline: "Kelechi, you haven't failed.",
+    body: "You're just tired from giving more than you've been receiving.",
+  },
+  {
+    num: '11',
+    layout: 'left',
+    headline: "Your business slowdown doesn't erase your ability.",
+    body: "It just means you need a reset. In love, don't overextend yourself to keep someone close. If it's real, it won't require you to shrink or over-give to be valued.",
+  },
+  {
+    num: '12',
+    layout: 'right',
+    headline: "Include yourself in the care you give others.",
+    body: "Rest without guilt. Say no when you're drained. Protect your peace like you protect everyone else's.",
+  },
+  {
+    num: '13',
+    layout: 'big',
+    headline: "You don't need to stop being loving.",
+    body: "You just need to stop abandoning yourself while doing it.",
   },
 ]
 
