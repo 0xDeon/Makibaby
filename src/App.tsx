@@ -1,265 +1,274 @@
-import React, { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import './App.css'
 
-// ─── Types ──────────────────────────────────────────────────────────────────
-type Part = string | { t: string; accent: true }
-type Phase = 'lines' | 'memoir' | 'likes'
+type Phase = 'cover' | 'chapters' | 'list'
 
-interface Line {
-  id: number
-  content: Part[]
-  size: 'large' | 'medium'
-}
-
-function render(parts: Part[]) {
-  return parts.map((p, i) =>
-    typeof p === 'string'
-      ? <span key={i}>{p}</span>
-      : <span key={i} className="accent">{p.t}</span>
-  )
-}
-
-// ─── Intro lines ─────────────────────────────────────────────────────────────
-const LINES: Line[] = [
-  { id: 0, content: ["Hey Maki"], size: 'large' },
-  { id: 1, content: ["So I've been meaning to tell you something"], size: 'medium' },
-  { id: 2, content: ["But first, let me make this a little more ", { t: "interesting", accent: true }], size: 'medium' },
-  { id: 3, content: ["You know I have a thing for the ", { t: "dramatics", accent: true }], size: 'medium' },
-  { id: 4, content: ["Let me start with a little ", { t: "story…", accent: true }], size: 'medium' },
-]
-
-// ─── Photos ──────────────────────────────────────────────────────────────────
-const PHOTOS: string[] = []
-
-function PhotoCarousel() {
-  const [cur, setCur] = useState(0)
-
-  useEffect(() => {
-    if (PHOTOS.length === 0) return
-    const t = setInterval(() => setCur(i => (i + 1) % PHOTOS.length), 3500)
-    return () => clearInterval(t)
-  }, [])
-
-  if (PHOTOS.length === 0) {
-    return (
-      <div className="carousel" style={{ background: '#0d1e35', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <span style={{ color: 'rgba(200,224,245,0.2)', fontSize: '0.75rem', letterSpacing: '0.2em' }}>add photos here</span>
-      </div>
-    )
-  }
-
-  return (
-    <div className="carousel">
-      <AnimatePresence mode="wait">
-        <motion.img
-          key={cur}
-          src={PHOTOS[cur]}
-          alt=""
-          className="carousel-img"
-          initial={{ opacity: 0, scale: 1.04 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8 }}
-          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-        />
-      </AnimatePresence>
-      <div className="carousel-veil" />
-      <div className="carousel-dots">
-        {PHOTOS.map((_, i) => (
-          <span key={i} className={`cdot${i === cur ? ' on' : ''}`} onClick={() => setCur(i)} />
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// ─── Memoir scene ────────────────────────────────────────────────────────────
-function Memoir({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
+// ─── Cover ───────────────────────────────────────────────────────────────────
+function Cover({ onBegin }: { onBegin: () => void }) {
   return (
     <motion.div
-      className="memoir"
+      className="cover"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.6 }}
+      exit={{ opacity: 0, scale: 0.96 }}
+      transition={{ duration: 0.7 }}
+      onClick={onBegin}
     >
-      <PhotoCarousel />
-
-      <div className="memoir-body">
-        <span className="memoir-tag">A Story</span>
-        <h2 className="memoir-title">Write your story title here…</h2>
-
-        <div className="memoir-text">
-          <p>
-            Write your memoir content here. Tell your story —{' '}
-            <em className="memoir-em">add the meaningful moments.</em>{' '}
-            This is your space to be honest and creative.
-          </p>
-
-          <p>
-            Add more paragraphs as needed. Talk about how you met, what you noticed,
-            what made you pay attention.
-          </p>
-
-          <p>And from there… the rest is history.</p>
-
-          <p className="memoir-punchline">
-            Their one flaw?{' '}
-            <em className="memoir-em">Write it here.</em>{' '}
-            <span className="memoir-lol">LOL</span>
-          </p>
-        </div>
-
-        <div className="memoir-nav">
-          <button className="memoir-back" onClick={onBack}>← back</button>
-          <button className="memoir-next" onClick={onNext}>Things I like about you →</button>
-        </div>
+      <div className="cover-inner">
+        <p className="cover-eyebrow">a letter for</p>
+        <h1 className="cover-name">Maki<span className="cover-dot">.</span></h1>
+        <div className="cover-rule" />
+        <p className="cover-sub">tap anywhere to begin</p>
       </div>
+      <p className="cover-corner">№ 001</p>
     </motion.div>
   )
 }
 
-// ─── Things I like ───────────────────────────────────────────────────────────
-interface LikeItem {
-  title: string
-  body: string
-  photos?: string[]
-  cornerPhotos?: string[]
-  video?: string
+// ─── Chapters ─────────────────────────────────────────────────────────────────
+interface Chapter {
+  num: string
+  layout: 'left' | 'right' | 'center' | 'big'
+  headline: string
+  body?: string
 }
 
-const CORNER_ROTS = ['-8deg', '6deg', '5deg', '-7deg']
-
-function CornerPolaroids({ photos }: { photos: string[] }) {
-  const positions = ['tl', 'tr', 'bl', 'br']
-  return (
-    <>
-      {photos.map((src, i) => (
-        <div
-          key={i}
-          className={`corner-polaroid corner-${positions[i]}`}
-          style={{ '--rot': CORNER_ROTS[i] } as React.CSSProperties}
-        >
-          <img src={src} alt="" />
-        </div>
-      ))}
-    </>
-  )
-}
-
-const LIKES: LikeItem[] = [
+const CHAPTERS: Chapter[] = [
   {
-    title: 'Like #1 title here',
-    body: "Describe the first thing you like about them. Be specific, be honest, be you.",
+    num: '01',
+    layout: 'big',
+    headline: "I've been meaning to say something.",
   },
   {
-    title: 'Like #2 title here',
-    body: "Another thing that caught your attention. Add photos or videos to any slide.",
+    num: '02',
+    layout: 'left',
+    headline: "Something I kept putting off.",
+    body: "Not because I didn't know how. But because I wasn't sure when the right moment was.",
   },
   {
-    title: 'Like #3 title here',
-    body: "Keep going. The more specific the better.",
+    num: '03',
+    layout: 'right',
+    headline: "So I figured — why not make it a whole thing.",
+    body: "You only get one shot at a first impression. Might as well make it memorable.",
   },
   {
-    title: 'Like #4 title here',
-    body: "You can add as many slides as you need.",
-  },
-  {
-    title: 'Now… the real question',
-    body: "You know where this is going.",
+    num: '04',
+    layout: 'center',
+    headline: "Before I get to the point though…",
+    body: "Let me tell you a few things I've noticed about you.",
   },
 ]
 
-function PolaroidVideo({ src, rot = '-3deg' }: { src: string; rot?: string }) {
-  return (
-    <div className="polaroid polaroid-video" style={{ '--rot': rot } as React.CSSProperties}>
-      <video src={src} autoPlay loop muted playsInline />
-    </div>
-  )
-}
-
-const POLAROID_ROTS = ['-5deg', '3deg', '-2deg']
-
-function Polaroids({ photos }: { photos: string[] }) {
-  return (
-    <div className="polaroids">
-      {photos.map((src, i) => (
-        <div
-          key={i}
-          className="polaroid"
-          style={{ '--rot': POLAROID_ROTS[i % POLAROID_ROTS.length] } as React.CSSProperties}
-        >
-          <img src={src} alt="" />
-        </div>
-      ))}
-    </div>
-  )
-}
-
-function Likes({ onBack }: { onBack: () => void }) {
+function Chapters({ onNext }: { onNext: () => void }) {
   const [idx, setIdx] = useState(0)
   const [dir, setDir] = useState(1)
-  const item = LIKES[idx]
+
+  function advance() {
+    if (idx < CHAPTERS.length - 1) {
+      setDir(1)
+      setIdx(i => i + 1)
+    } else {
+      onNext()
+    }
+  }
+
+  function back() {
+    if (idx > 0) {
+      setDir(-1)
+      setIdx(i => i - 1)
+    }
+  }
+
+  const ch = CHAPTERS[idx]
+
+  return (
+    <motion.div
+      className="chapters"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      onClick={advance}
+    >
+      {/* Back tap zone */}
+      {idx > 0 && (
+        <div
+          className="ch-back-zone"
+          onClick={(e) => { e.stopPropagation(); back() }}
+        />
+      )}
+
+      <AnimatePresence mode="wait" custom={dir}>
+        <motion.div
+          key={idx}
+          custom={dir}
+          className={`ch-page ch-${ch.layout}`}
+          variants={{
+            enter: (d: number) => ({ opacity: 0, x: d > 0 ? 60 : -60 }),
+            show: { opacity: 1, x: 0 },
+            exit: (d: number) => ({ opacity: 0, x: d > 0 ? -40 : 40 }),
+          }}
+          initial="enter"
+          animate="show"
+          exit="exit"
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <span className="ch-num">{ch.num}</span>
+          <div className="ch-content">
+            <h2 className="ch-headline">{ch.headline}</h2>
+            {ch.body && <p className="ch-body">{ch.body}</p>}
+          </div>
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Progress bar */}
+      <div className="ch-progress">
+        <div
+          className="ch-progress-fill"
+          style={{ width: `${((idx + 1) / CHAPTERS.length) * 100}%` }}
+        />
+      </div>
+
+      <p className="ch-hint">{idx < CHAPTERS.length - 1 ? 'tap to continue' : 'tap to see the list'}</p>
+    </motion.div>
+  )
+}
+
+// ─── The List ─────────────────────────────────────────────────────────────────
+interface ListItem {
+  num: string
+  title: string
+  body: string
+  photos?: string[]
+  video?: string
+  accent?: string
+}
+
+const LIST: ListItem[] = [
+  {
+    num: '01',
+    title: 'List item one',
+    body: 'Add the first thing you like about them here. The more specific the better.',
+    accent: 'note',
+  },
+  {
+    num: '02',
+    title: 'List item two',
+    body: 'Add photos to any item by dropping them in public/images/ and referencing them in the photos array.',
+  },
+  {
+    num: '03',
+    title: 'List item three',
+    body: 'You can also add a video to any slide using the video field.',
+  },
+  {
+    num: '04',
+    title: 'List item four',
+    body: 'Keep going — add as many as you need.',
+  },
+  {
+    num: '05',
+    title: 'And the question…',
+    body: 'You know where this is going.',
+    accent: 'final',
+  },
+]
+
+function ListScene({ onBack }: { onBack: () => void }) {
+  const [idx, setIdx] = useState(0)
+  const [dir, setDir] = useState(1)
+  const item = LIST[idx]
 
   function go(n: number) {
-    if (n < 0 || n >= LIKES.length) return
+    if (n < 0 || n >= LIST.length) return
     setDir(n > idx ? 1 : -1)
     setIdx(n)
   }
 
-  const num = String(idx + 1).padStart(2, '0')
-  const total = String(LIKES.length).padStart(2, '0')
-
   return (
     <motion.div
-      className="likes"
+      className="list-scene"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.6 }}
     >
-      <div className="likes-topbar">
-        <button className="memoir-back" onClick={onBack}>← back</button>
-        <span className="likes-counter">{num} / {total}</span>
+      {/* Top bar */}
+      <div className="ls-topbar">
+        <button className="ls-back-btn" onClick={onBack}>← back</button>
+        <span className="ls-counter">{idx + 1} of {LIST.length}</span>
       </div>
 
-      <div className="likes-stage">
+      {/* Stage */}
+      <div className="ls-stage">
         <AnimatePresence mode="wait" custom={dir}>
           <motion.div
             key={idx}
             custom={dir}
-            className="likes-slide"
+            className={`ls-item${item.accent === 'final' ? ' ls-final' : ''}`}
             variants={{
-              enter: (d: number) => ({ opacity: 0, y: d > 0 ? 60 : -60 }),
-              show:  { opacity: 1, y: 0 },
-              exit:  (d: number) => ({ opacity: 0, y: d > 0 ? -40 : 40 }),
+              enter: (d: number) => ({ opacity: 0, y: d > 0 ? 48 : -48 }),
+              show: { opacity: 1, y: 0 },
+              exit: (d: number) => ({ opacity: 0, y: d > 0 ? -32 : 32 }),
             }}
             initial="enter"
             animate="show"
             exit="exit"
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           >
-            <p className="likes-label">The List</p>
-            <h2 className="likes-title">{item.title}</h2>
-            <p className="likes-body">{item.body}</p>
+            <div className="ls-num-wrap">
+              <span className="ls-ordinal">{item.num}</span>
+              <div className="ls-rule" />
+            </div>
+            <h2 className="ls-title">{item.title}</h2>
+            <p className="ls-body">{item.body}</p>
 
-            {item.photos && <Polaroids photos={item.photos} />}
-            {item.video && <PolaroidVideo src={item.video} />}
+            {item.photos && (
+              <div className="ls-photos">
+                {item.photos.map((src, i) => (
+                  <img key={i} src={src} className="ls-photo" alt="" />
+                ))}
+              </div>
+            )}
+
+            {item.video && (
+              <video
+                className="ls-video"
+                src={item.video}
+                autoPlay
+                loop
+                muted
+                playsInline
+              />
+            )}
           </motion.div>
         </AnimatePresence>
-
-        {item.cornerPhotos && <CornerPolaroids photos={item.cornerPhotos} />}
       </div>
 
-      <div className="likes-nav">
-        <button className="likes-arrow" onClick={() => go(idx - 1)} disabled={idx === 0}>←</button>
-        <div className="likes-track">
-          {LIKES.map((_, i) => (
-            <button key={i} className={`likes-pip${i === idx ? ' on' : ''}`} onClick={() => go(i)} />
+      {/* Nav */}
+      <div className="ls-nav">
+        <button
+          className="ls-arrow"
+          onClick={() => go(idx - 1)}
+          disabled={idx === 0}
+        >←</button>
+
+        <div className="ls-pips">
+          {LIST.map((_, i) => (
+            <button
+              key={i}
+              className={`ls-pip${i === idx ? ' on' : ''}`}
+              onClick={() => go(i)}
+            />
           ))}
         </div>
-        <button className="likes-arrow" onClick={() => go(idx + 1)} disabled={idx === LIKES.length - 1}>→</button>
+
+        <button
+          className="ls-arrow"
+          onClick={() => go(idx + 1)}
+          disabled={idx === LIST.length - 1}
+        >→</button>
       </div>
     </motion.div>
   )
@@ -267,59 +276,19 @@ function Likes({ onBack }: { onBack: () => void }) {
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
 export default function App() {
-  const [phase, setPhase] = useState<Phase>('lines')
-  const [idx, setIdx]     = useState(0)
-  const [dir, setDir]     = useState(1)
-
-  function go(next: number) {
-    if (next < 0) return
-    if (next >= LINES.length) { setPhase('memoir'); return }
-    setDir(next > idx ? 1 : -1)
-    setIdx(next)
-  }
+  const [phase, setPhase] = useState<Phase>('cover')
 
   return (
     <div className="app">
       <AnimatePresence mode="wait">
-        {phase === 'likes' ? (
-          <Likes key="likes" onBack={() => setPhase('memoir')} />
-        ) : phase === 'memoir' ? (
-          <Memoir
-            key="memoir"
-            onNext={() => setPhase('likes')}
-            onBack={() => { setPhase('lines'); setIdx(LINES.length - 1) }}
-          />
-        ) : (
-          <motion.div key="lines" className="lines-scene" exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
-            <AnimatePresence mode="wait" custom={dir}>
-              <motion.p
-                key={idx}
-                custom={dir}
-                className={`line ${LINES[idx].size}`}
-                variants={{
-                  enter: (d: number) => ({ opacity: 0, y: d > 0 ? 48 : -48 }),
-                  show:  { opacity: 1, y: 0 },
-                  exit:  (d: number) => ({ opacity: 0, y: d > 0 ? -32 : 32 }),
-                }}
-                initial="enter"
-                animate="show"
-                exit="exit"
-                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-              >
-                {render(LINES[idx].content)}
-              </motion.p>
-            </AnimatePresence>
-
-            <div className="nav">
-              <button className="nav-btn" onClick={() => go(idx - 1)} disabled={idx === 0}>←</button>
-              <div className="dots">
-                {LINES.map((_, i) => (
-                  <span key={i} className={`dot${i === idx ? ' on' : ''}`} />
-                ))}
-              </div>
-              <button className="nav-btn" onClick={() => go(idx + 1)}>→</button>
-            </div>
-          </motion.div>
+        {phase === 'cover' && (
+          <Cover key="cover" onBegin={() => setPhase('chapters')} />
+        )}
+        {phase === 'chapters' && (
+          <Chapters key="chapters" onNext={() => setPhase('list')} />
+        )}
+        {phase === 'list' && (
+          <ListScene key="list" onBack={() => setPhase('chapters')} />
         )}
       </AnimatePresence>
     </div>
