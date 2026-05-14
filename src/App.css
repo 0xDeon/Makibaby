@@ -300,3 +300,25 @@ body {
   .cover-sub { display: none; }
   .phrase { font-size: clamp(1rem, 5.5vw, 1.3rem); }
 }
+
+/* ── MUSIC BUTTON ──────────────────────────────────────────────────────────── */
+.music-btn {
+  position: fixed;
+  top: 20px; right: 20px;
+  z-index: 999;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  color: rgba(255,255,255,0.75);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.music-btn:hover {
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.4);
+  color: #fff;
+}
+.music-btn svg { width: 18px; height: 18px; }
